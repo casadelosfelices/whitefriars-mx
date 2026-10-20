@@ -21,7 +21,7 @@ jobs:
       - name: Assemble site
         run: |
           mkdir _site
-          for z in $(ls *site-[0-9]-*.zip | sort -V); do unzip -oq "$z" -d _site; done
+          for n in 1 2 3 4 5 9 z; do for z in *site-$n-*.zip; do unzip -oq "$z" -d _site; done; done
           echo "whitefriars.mx" > _site/CNAME
           touch _site/.nojekyll
       - uses: actions/configure-pages@v5
