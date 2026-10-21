@@ -18,11 +18,13 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Assemble site
         run: |
           mkdir _site
           for n in 1 2 3 4 5 9 z; do for z in *site-$n-*.zip; do unzip -oq "$z" -d _site; done; done
-          for f in $(ls *years*.zip *update*.zip 2>/dev/null | sort -V); do unzip -oq "$f" -d _site; done
+          for f in $(git log --diff-filter=A --format= --name-only --reverse -- '*.zip' | grep -E '(years|update).*\.zip$' | awk '!seen[$0]++'); do unzip -oq "$f" -d _site; done
           echo "whitefriars.mx" > _site/CNAME
           touch _site/.nojekyll
       - uses: actions/configure-pages@v5
