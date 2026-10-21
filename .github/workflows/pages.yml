@@ -24,7 +24,7 @@ jobs:
         run: |
           mkdir _site
           for n in 1 2 3 4 5 9 z; do for z in *site-$n-*.zip; do unzip -oq "$z" -d _site; done; done
-          for f in $(git log --diff-filter=A --format= --name-only --reverse -- '*.zip' | grep -E '(years|update).*\.zip$' | awk '!seen[$0]++'); do unzip -oq "$f" -d _site; done
+          git log --diff-filter=A --format= --name-only --reverse -- '*.zip' | grep -E '(years|update).*\.zip$' | awk '!seen[$0]++' | while IFS= read -r f; do if [ -f "$f" ]; then unzip -oq "$f" -d _site; fi; done
           echo "whitefriars.mx" > _site/CNAME
           touch _site/.nojekyll
       - uses: actions/configure-pages@v5
